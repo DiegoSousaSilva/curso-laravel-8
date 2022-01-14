@@ -23,7 +23,7 @@ class PostController extends Controller {
     public function store(StoreUpdatePost $request){
         $post = Post::create($request->all());
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')->with('msg', 'Post criado com sucesso');
     }
 
     public function show($id){
@@ -43,5 +43,25 @@ class PostController extends Controller {
         }
         $post->delete();
         return redirect()->route('posts.index')->with('msg', 'Post deletado com sucesso');
+    }
+
+    public function edit($id){
+        $post = Post::find($id);
+        if(!$post){
+            return redirect()->back();
+        }
+
+        return view('admin.posts.edit', compact('post'));
+    }
+
+
+    public function update(StoreUpdatePost $request, $id){
+        $post = Post::find($id);
+        if(!$post){
+            return redirect()->back();
+        }
+        $post->update($request->all());
+
+        return redirect()->route('posts.index')->with('msg', 'Post atualizado com sucesso');
     }
 }
