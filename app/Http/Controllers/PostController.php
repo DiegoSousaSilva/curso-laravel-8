@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class PostController extends Controller {
     public function index()
     {
-        $posts = Post::latest()->paginate(15);
+        $posts = Post::latest()->paginate(4);
 
 
         return view('admin.posts.index',['posts' => $posts]);
@@ -63,5 +63,13 @@ class PostController extends Controller {
         $post->update($request->all());
 
         return redirect()->route('posts.index')->with('msg', 'Post atualizado com sucesso');
+    }
+
+    public function search(Request $request){
+        $filters = $request->all();
+        $posts = Post::where('title', 'LIKE', "%{$request->search}%")
+            ->orWhere('content', 'LIKE', "%{$request->search}%")
+            ->paginate(4);
+        return view('admin.posts.index', compact('posts', 'filters'));
     }
 }
